@@ -1,4 +1,4 @@
-let chapters=[];
+let chapters=JSON.parse(localStorage.getItem('jeeTrackerChapters')||'[]');
 
 const themes={
 default:['#f7f5ff','#fff','#202036','#77758c','#7162e9','#e5e2f0','#faf9ff'],
@@ -54,23 +54,23 @@ function addChapter(){
   if(!chapter || !lectures || lectures<1){alert('Enter chapter name and number of lectures.');return;}
   chapters.push({
     subject,chapter,lectures,
-    mains:document.getElementById('mains').value,
-    adv:document.getElementById('adv').value,
     items:checkedItems()
   });
   document.getElementById('chapter').value='';
+  document.getElementById('lectures').value='';
+  localStorage.setItem('jeeTrackerChapters',JSON.stringify(chapters));
   renderList();
   generatePreview();
 }
 
-function removeChapter(i){chapters.splice(i,1);renderList();generatePreview()}
+function removeChapter(i){chapters.splice(i,1);localStorage.setItem('jeeTrackerChapters',JSON.stringify(chapters));renderList();generatePreview()}
 
 function renderList(){
   const el=document.getElementById('chapterList');
   el.innerHTML=chapters.length ? chapters.map((c,i)=>`
     <div class="chapter">
       <div><b>${i+1}. ${escapeHtml(c.chapter)}</b><br>
-      <small>${c.subject} • ${c.lectures} Lect • MAINS LEVEL: ${c.mains} • ADV LEVEL: ${c.adv}</small></div>
+      <small>${c.subject} • ${c.lectures} Lect • MAINS LEVEL: ${c.items.includes('MAINS LEVEL')?'✓':'□'} • ADV LEVEL: ${c.items.includes('ADV LEVEL')?'✓':'□'}</small></div>
       <button class="danger" onclick="removeChapter(${i})">REMOVE</button>
     </div>`).join('') : '';
 }
@@ -79,14 +79,14 @@ function generatePreview(){
   if(!chapters.length){document.getElementById('preview').innerHTML='';return;}
   let html='<table><thead><tr>';
   html+='<th>#</th><th>Chapter Name</th><th>Lecture Tracker</th><th>Total Lec</th><th>Lec Comp</th><th>MAINS LEVEL</th><th>ADV LEVEL</th>';
-  const allItems=[...new Set(chapters.flatMap(c=>c.items))];
+  const allItems=[...new Set(chapters.flatMap(c=>c.items))].filter(x=>x!=="MAINS LEVEL"&&x!=="ADV LEVEL");
   allItems.forEach(x=>html+=`<th>${x}</th>`);
   html+='</tr></thead><tbody>';
 
   chapters.forEach((c,i)=>{
     html+=`<tr><td>${i+1}</td><td class="chapter-name">${escapeHtml(c.chapter)}</td><td>`;
     for(let n=1;n<=c.lectures;n++) html+=`<span class="lecture lec-preview">□ LEC-${n}</span>`;
-    html+=`</td><td>${c.lectures}</td><td>□</td><td>${c.mains}</td><td>${c.adv}</td>`;
+    html+=`</td><td>${c.lectures}</td><td>□</td><td class="check">${c.items.includes('MAINS LEVEL')?'□':''}</td><td class="check">${c.items.includes('ADV LEVEL')?'□':''}</td>`;
     allItems.forEach(x=>html+=`<td class="check">${c.items.includes(x)?'□':''}</td>`);
     html+='</tr>';
   });
@@ -95,7 +95,7 @@ function generatePreview(){
 }
 
 function clearAll(){
-  if(confirm('Clear all chapters?')){chapters=[];renderList();generatePreview();}
+  if(confirm('Clear all chapters?')){chapters=[];localStorage.removeItem('jeeTrackerChapters');renderList();generatePreview();}
 }
 
 function escapeHtml(s){
@@ -105,12 +105,12 @@ function escapeHtml(s){
 function downloadPDF(){
   if(!chapters.length){alert('Add at least one chapter first.');return;}
   generatePreview();
-  const allItems=[...new Set(chapters.flatMap(c=>c.items))];
+  const allItems=[...new Set(chapters.flatMap(c=>c.items))].filter(x=>x!=="MAINS LEVEL"&&x!=="ADV LEVEL");
   let rows='';
   chapters.forEach((c,i)=>{
     rows+=`<tr><td>${i+1}</td><td class="left">${escapeHtml(c.chapter)}</td><td class="lectures">`;
     for(let n=1;n<=c.lectures;n++) rows+=`<span class="lec-block">□ LEC-${n}</span>`;
-    rows+=`</td><td>${c.lectures}</td><td>□</td><td>${c.mains}</td><td>${c.adv}</td>`;
+    rows+=`</td><td>${c.lectures}</td><td>□</td><td>${c.items.includes('MAINS LEVEL')?'□':''}</td><td>${c.items.includes('ADV LEVEL')?'□':''}</td>`;
     allItems.forEach(x=>rows+=`<td>${c.items.includes(x)?'□':''}</td>`);
     rows+='</tr>';
   });
@@ -144,3 +144,6 @@ function downloadPDF(){
   </body></html>`);
   win.document.close();
 }
+
+renderList();
+generatePreview();
