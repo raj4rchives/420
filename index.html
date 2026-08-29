@@ -1,132 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JEE Tracker — Study Planner</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReceiptFlow — Receipt Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="page-glow glow-one"></div><div class="page-glow glow-two"></div>
-
-<header class="nav">
-  <div class="nav-inner">
-    <div class="brand">
-      <div class="brand-mark"><span></span><span></span><span></span></div>
-      <div class="brand-name">JEE<span>Tracker</span></div>
-    </div>
-    <div class="nav-actions">
-      <select id="theme" class="theme-select" onchange="applyTheme()" aria-label="Choose theme">
-        <option value="default">Theme · Lavender</option>
-        <option value="midnight">Midnight</option><option value="ocean">Ocean</option>
-        <option value="royal">Royal</option><option value="violet">Violet</option>
-        <option value="plum">Plum</option><option value="rose">Rose</option>
-        <option value="coral">Coral</option><option value="sunset">Sunset</option>
-        <option value="amber">Amber</option><option value="forest">Forest</option>
-        <option value="emerald">Emerald</option><option value="teal">Teal</option>
-        <option value="cyan">Cyan</option><option value="sky">Sky</option>
-        <option value="indigo">Indigo</option><option value="slate">Slate</option>
-        <option value="graphite">Graphite</option><option value="coffee">Coffee</option>
-        <option value="mint">Mint</option><option value="lavender">Lavender</option>
-        <option value="cherry">Cherry</option><option value="neon">Neon</option>
-        <option value="mono">Pure Black</option>
-      </select>
-      <button class="menu-btn" aria-label="Menu">☰</button>
-    </div>
-  </div>
+<header class="topbar">
+  <a class="brand" href="#"><span class="mark"></span>Receipt<span>Flow</span></a>
+  <nav><a href="#home">Home</a><a href="#generator">Generator</a><a href="#how">How it works</a></nav>
+  <button class="nav-btn" onclick="document.querySelector('#generator').scrollIntoView()">Create receipt →</button>
 </header>
 
-<main class="container">
+<main id="home">
   <section class="hero">
-    <div class="eyebrow"><span class="spark">✦</span> YOUR JEE PREPARATION, ORGANIZED</div>
-    <h1>Plan your syllabus.<br><span>Track your progress.</span><br>Crush your JEE.</h1>
-    <p class="hero-copy">Build a clean, printable syllabus tracker in seconds. Add your subjects, chapters and lectures, then download an A4 tracker you can tick by hand.</p>
-    <div class="hero-buttons">
-      <a href="#builder" class="primary-btn">Create my tracker <b>→</b></a>
-      <a href="#preview" class="ghost-btn">See preview</a>
+    <div class="hero-copy">
+      <p class="eyebrow">RECEIPTS MADE SIMPLE</p>
+      <h1>Create a bill.<br><em>Make it professional.</em><br>Print it.</h1>
+      <p class="lead">Generate clean, professional receipts for gyms, coaching institutes, teachers and small businesses. Add your own payment QR and download a print-ready PDF.</p>
+      <div class="hero-actions">
+        <button class="primary big" onclick="document.querySelector('#generator').scrollIntoView()">Create a receipt →</button>
+        <button class="outline big" onclick="document.querySelector('#how').scrollIntoView()">How it works</button>
+      </div>
     </div>
-    <div class="trust-row">
-      <div class="avatars"><i>PH</i><i>CH</i><i>MA</i><i>JEE</i></div>
-      <div><strong>Made for serious JEE prep</strong><small>Simple • Printable • Offline</small></div>
-      <div class="mini-stat"><strong>24</strong><small>themes</small></div>
-      <div class="mini-stat"><strong>A4</strong><small>print ready</small></div>
+    <div class="hero-card">
+      <div class="mini-receipt">
+        <div class="mini-title">RECEIPT</div><div class="mini-line"></div>
+        <div class="mini-row"><span>Monthly Membership</span><b>₹ 1,500</b></div>
+        <div class="mini-row"><span>Registration Fee</span><b>₹ 500</b></div>
+        <div class="mini-line"></div>
+        <div class="mini-total"><span>TOTAL</span><b>₹ 2,000</b></div>
+        <div class="mini-bottom"><div class="fake-qr"></div><span>Professional<br>Printable Receipt</span></div>
+      </div>
     </div>
   </section>
 
-  <section class="builder-card" id="builder">
-    <div class="section-head">
-      <div>
-        <div class="tiny-label">01 / BUILD YOUR TRACKER</div>
-        <h2>Add chapters</h2>
-      </div>
-      <span class="pill">Offline Printable</span>
-    </div>
+  <section class="stats"><div><b>3</b><span>Business templates</span></div><div><b>PDF</b><span>Print-ready download</span></div><div><b>QR</b><span>Your payment code</span></div><div><b>100%</b><span>Client-side</span></div></section>
 
-    <div class="form-grid">
-      <div class="field"><label>SUBJECT</label>
-        <select id="subject"><option>PHYSICS</option><option>CHEMISTRY</option><option>MATHEMATICS</option></select>
-      </div>
-      <div class="field field-wide"><label>CHAPTER NAME</label>
-        <input id="chapter" placeholder="e.g. Ray OPTICS">
-      </div>
-      <div class="field"><label>TOTAL LEC</label>
-        <input id="lectures" type="number" min="1" max="100" placeholder="Enter total lectures">
-      </div>
-    </div>
+  <section id="generator" class="generator">
+    <div class="section-intro"><p class="eyebrow">01 / GENERATOR</p><h2>Create your receipt</h2><p>Fill in the details. Your receipt updates instantly.</p></div>
 
-    <div class="tracking-box">
-      <div class="tiny-label">TRACKING CHECKLIST</div>
-      <div class="options">
-        <label><input type="checkbox" value="MAINS LEVEL" checked> MAINS LEVEL</label>
-        <label><input type="checkbox" value="ADV LEVEL" checked> ADV LEVEL</label>
-        <label><input type="checkbox" value="SHORT NOTES" checked> SHORT NOTES</label>
-        <label><input type="checkbox" value="DPP" checked> DPP</label>
-        <label><input type="checkbox" value="HW" checked> HW</label>
-        <label><input type="checkbox" value="MODULE" checked> MODULE</label>
-        <label><input type="checkbox" value="PYQ" checked> PYQ</label>
-        <label><input type="checkbox" value="TEST" checked> TEST</label>
-        <label><input type="checkbox" value="R1" checked> R1</label>
-        <label><input type="checkbox" value="R2" checked> R2</label>
-        <label><input type="checkbox" value="R3" checked> R3</label>
-      </div>
-    </div>
+    <div class="workspace">
+      <form class="form-card" id="receiptForm">
+        <div class="form-section">
+          <h3>Business details</h3>
+          <div class="field"><label>RECEIPT TYPE</label>
+            <select id="businessType"><option value="GYM">Gym / Fitness</option><option value="COACHING">Coaching / Institute</option><option value="TUITION">Teacher / Tuition</option><option value="BUSINESS">General Business</option></select>
+          </div>
+          <div class="field"><label>BUSINESS / INSTITUTE NAME</label><input id="businessName" placeholder="e.g. Peak Fitness Gym"></div>
+          <div class="field"><label>ADDRESS / CONTACT</label><input id="businessInfo" placeholder="Address or phone number"></div>
+        </div>
 
-    <div class="buttons">
-      <button onclick="addChapter()" class="primary-btn">+ Add chapter</button>
-      <button onclick="generatePreview()" class="ghost-btn">Preview tracker</button>
-      <button onclick="downloadPDF()" class="download-btn">Download PDF <span>↓</span></button>
-      <button onclick="clearAll()" class="clear-btn">Clear all</button>
-    </div>
+        <div class="form-section">
+          <h3>Customer & payment</h3>
+          <div class="two"><div class="field"><label>CUSTOMER NAME</label><input id="customerName" placeholder="Full name"></div><div class="field"><label>RECEIPT ID</label><input id="receiptId" placeholder="Auto generated"></div></div>
+          <div class="two"><div class="field"><label>DATE</label><input id="receiptDate" type="date"></div><div class="field"><label>PAYMENT STATUS</label><select id="paymentStatus"><option>PAID</option><option>PENDING</option><option>PARTIAL</option></select></div></div>
+        </div>
 
-    <div class="chapter-list" id="chapterList"></div>
+        <div class="form-section">
+          <div class="section-title-row"><h3>Bill items</h3><button type="button" class="text-btn" id="addItem">+ Add item</button></div>
+          <div id="items"></div>
+        </div>
+
+        <div class="form-section">
+          <h3>Payment QR</h3>
+          <p class="hint">Upload your own payment QR image. It will appear on the receipt.</p>
+          <label class="upload-box">↑ <span>Upload QR Code</span><input id="qrUpload" type="file" accept="image/*"></label>
+          <button type="button" class="remove-qr" id="removeQr">Remove QR</button>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="outline" id="saveDraft">Save details</button>
+          <button type="button" class="primary" id="downloadPdf">Download PDF ↓</button>
+        </div>
+      </form>
+
+      <aside class="preview-side">
+        <div class="preview-header"><span>LIVE PREVIEW</span><button class="print-small" id="printPreview">Print</button></div>
+        <div class="receipt-paper" id="receiptPreview"></div>
+      </aside>
+    </div>
   </section>
 
-  <section class="preview-card" id="preview">
-    <div class="section-head">
-      <div><div class="tiny-label">02 / LIVE PREVIEW</div><h2>Your tracker</h2></div>
-      <span class="pill dark-pill">Black print mode</span>
-    </div>
-    <div id="previewTable"><div class="empty-preview">Add a chapter above to see your tracker here.</div></div>
-  </section>
-
-  <section class="feature-strip">
-    <div><b>01</b><strong>Enter</strong><span>subject, chapter & lectures</span></div>
-    <div><b>02</b><strong>Customize</strong><span>levels & checklist columns</span></div>
-    <div><b>03</b><strong>Print</strong><span>dark A4 PDF, ready to tick</span></div>
-  </section>
-
-  <footer>JEE TRACKER <span>•</span> Offline Printable • Tick everything by hand</footer>
+  <section id="how" class="how"><p class="eyebrow">02 / SIMPLE PROCESS</p><h2>From details to receipt in minutes.</h2><div class="steps"><div><b>01</b><h3>Fill details</h3><p>Enter business, customer and payment information.</p></div><div><b>02</b><h3>Add your QR</h3><p>Upload your payment QR code if required.</p></div><div><b>03</b><h3>Print or save PDF</h3><p>Use your browser's PDF and print options.</p></div></div></section>
 </main>
 
-<script>
-const oldPreview = document.getElementById('preview');
-const previewTable = document.getElementById('previewTable');
-Object.defineProperty(document.getElementById('preview'), 'innerHTML', {
-  configurable:true,
-  set(v){ previewTable.innerHTML=v; },
-  get(){ return previewTable.innerHTML; }
-});
-</script>
+<footer>RECEIPTFLOW <span>•</span> Professional receipt generator</footer>
 <script src="script.js"></script>
 </body>
 </html>
