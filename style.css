@@ -14,3 +14,10 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180d
 @media(max-width:460px){.hero h1{font-size:40px}.hero-actions{flex-direction:column}.stats{display:none}.generator,.how{margin:60px auto}.section-intro h2,.how h2{font-size:30px}.receipt-paper{padding:22px 18px}.r-amount{font-size:39px}.r-dates{flex-direction:column}}
 
 #logoInput{display:none}.logo-upload-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.logo-upload-btn{display:inline-flex!important;align-items:center;justify-content:center;background:#f3f2ff;border:1px dashed #aaa5ff;border-radius:7px;padding:9px 12px!important;color:var(--accent);cursor:pointer;font-size:11px!important;letter-spacing:0!important;margin:0!important}.logo-upload-row span{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}.remove-logo{padding:7px 9px;font-size:10px;background:#fff;border:1px solid var(--line);color:#8a3340}.receipt-logo-image{width:50px;height:50px;object-fit:contain;border-radius:10px;border:1px solid #e1e3ea;background:#fff;padding:3px}.receipt-logo .receipt-logo-image{margin-right:0}
+/* CartyWeb branded logo — uses the same dark + purple receipt theme */
+.brand{height:70px}
+.brand-logo{width:180px;height:52px;object-fit:contain;object-position:left center;display:block}
+.mini-brand{height:30px;display:flex;align-items:center}
+.mini-brand img{width:150px;height:32px;object-fit:contain;object-position:left center;display:block}
+.receipt-logo-brand{width:132px;height:44px;object-fit:contain;object-position:left center;display:block}
+@media(max-width:460px){.brand-logo{width:148px;height:46px}}
