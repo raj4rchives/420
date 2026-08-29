@@ -1,7 +1,7 @@
 let chapters=[];
 
 const themes={
-default:['#eef2f7','#fff','#111827','#667085','#111827','#d0d5dd','#f8fafc'],
+default:['#f7f5ff','#fff','#202036','#77758c','#7162e9','#e5e2f0','#faf9ff'],
 midnight:['#0b1020','#111827','#f8fafc','#aab4c5','#7c9cff','#344054','#182033'],
 ocean:['#eaf6ff','#fff','#082f49','#466b82','#0369a1','#a7d8f5','#f3faff'],
 royal:['#f2efff','#fff','#25135e','#665b88','#5b21b6','#c9bdf2','#faf8ff'],
@@ -21,7 +21,7 @@ slate:['#f1f5f9','#fff','#0f172a','#64748b','#334155','#c5ced8','#f8fafc'],
 graphite:['#e9eaec','#fff','#171717','#666','#303030','#bfc1c5','#f5f5f5'],
 coffee:['#f7f1eb','#fff','#3b2115','#76645a','#6b3f25','#d9c4b3','#fcfaf8'],
 mint:['#effcf7','#fff','#12372a','#5d766c','#15803d','#b9dfce','#f7fffb'],
-lavender:['#f5f3ff','#fff','#2e1065','#70668a','#6d28d9','#d1c9ee','#fbfaff'],
+lavender:['#f7f5ff','#fff','#202036','#77758c','#7162e9','#e5e2f0','#faf9ff'],
 cherry:['#fff1f2','#fff','#450a0a','#795a5a','#991b1b','#efb4b4','#fff8f8'],
 neon:['#f2fce9','#fff','#17220d','#62705a','#4d7c0f','#c4e39b','#f8fff1'],
 mono:['#e5e5e5','#fff','#000','#555','#000','#999','#f7f7f7']
