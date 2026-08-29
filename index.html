@@ -48,6 +48,16 @@
       <form class="form-card" id="receiptForm">
         <div class="form-section">
           <h3>Property & sender</h3>
+          <div class="field logo-upload-field">
+            <label>RECEIPT LOGO (PNG)</label>
+            <div class="logo-upload-row">
+              <label class="logo-upload-btn" for="logoInput">+ Add logo PNG</label>
+              <input id="logoInput" type="file" accept="image/png">
+              <span id="logoFileName">No logo selected</span>
+              <button type="button" class="remove-logo" id="removeLogo">Remove</button>
+            </div>
+            <p class="hint">Upload your property or CartyWeb logo. It will appear in the receipt and PDF preview.</p>
+          </div>
           <div class="field"><label>CARTYWEB / PROPERTY NAME</label><input id="businessName" placeholder="e.g. Sharma Residency"></div>
           <div class="field"><label>PROPERTY / ROOM DETAILS</label><input id="propertyInfo" placeholder="e.g. Flat 204, Green Residency"></div>
           <div class="two"><div class="field"><label>FROM / OWNER NAME</label><input id="ownerName" placeholder="Your name"></div><div class="field"><label>CONTACT (OPTIONAL)</label><input id="businessInfo" placeholder="Phone or email"></div></div>
@@ -84,7 +94,7 @@
       </form>
 
       <aside class="preview-side">
-        <div class="preview-header"><span>LIVE PREVIEW</span><button class="print-small" id="printPreview">Print</button></div>
+        <div class="preview-header"><span>PDF STYLE LIVE PREVIEW</span><div class="preview-actions"><span class="paper-size">A5</span><button class="print-small" id="printPreview">Print / PDF</button></div></div>
         <div class="receipt-paper" id="receiptPreview"></div>
       </aside>
     </div>
