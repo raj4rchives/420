@@ -1,80 +1,100 @@
 const $ = id => document.getElementById(id);
-let items = [{name:"Monthly Fee / Membership", amount:""}];
-let qrData = localStorage.getItem("receiptFlowQR") || "";
 
 function formatMoney(v){
   const n = Number(v || 0);
-  return n.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+  return n.toLocaleString("en-IN", {maximumFractionDigits:2});
 }
-function receiptNumber(){
-  return "RF-" + Date.now().toString().slice(-7);
+function receiptNumber(){ return "CW-" + Date.now().toString().slice(-9); }
+function escapeHtml(s){ return String(s ?? "").replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function prettyDate(value){
+  if(!value) return "—";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-IN", {day:"numeric",month:"long",year:"numeric"});
 }
-function renderItems(){
-  $("items").innerHTML = items.map((item,i)=>`
-    <div class="item-row">
-      <input value="${item.name.replace(/"/g,"&quot;")}" placeholder="Item / fee name" oninput="updateItem(${i},'name',this.value)">
-      <input type="number" min="0" value="${item.amount}" placeholder="Amount" oninput="updateItem(${i},'amount',this.value)">
-      <button type="button" onclick="deleteItem(${i})">×</button>
-    </div>`).join("");
+function prettyMonth(value){
+  if(!value) return "Rent period not selected";
+  return new Date(value + "-01T00:00:00").toLocaleDateString("en-IN", {month:"long",year:"numeric"});
 }
-function updateItem(i,key,value){items[i][key]=value;renderPreview();}
-function deleteItem(i){if(items.length>1){items.splice(i,1);renderItems();renderPreview();}}
-$("addItem").onclick=()=>{items.push({name:"",amount:""});renderItems();};
+
+const presets = {
+  reminder: () => `Hello ${$("customerName").value.trim() || ""}, please pay the rent of ₹${formatMoney($("rentAmount").value)}${$("dueDate").value ? ` by ${prettyDate($("dueDate").value)}` : " before the due date"}. Thank you.`,
+  thankyou: () => `Thank you for your payment! Your rent for ${prettyMonth($("rentMonth").value)} has been received successfully.`,
+  received: () => `Payment received successfully. Thank you for paying your rent on time.`
+};
 
 function renderPreview(){
-  const name=$("businessName").value.trim() || $("businessType").value+" RECEIPT";
-  const info=$("businessInfo").value.trim();
-  const customer=$("customerName").value.trim() || "Customer";
-  const id=$("receiptId").value.trim() || receiptNumber();
-  const date=$("receiptDate").value ? new Date($("receiptDate").value+"T00:00:00").toLocaleDateString("en-GB") : new Date().toLocaleDateString("en-GB");
-  const status=$("paymentStatus").value;
-  const total=items.reduce((s,x)=>s+(Number(x.amount)||0),0);
-  $("receiptPreview").innerHTML=`
-    <div class="r-title">${escapeHtml(name)}</div>
-    ${info?`<div class="r-info">${escapeHtml(info)}</div>`:""}
-    <div class="r-id">RECEIPT ID: ${escapeHtml(id)}</div>
-    <div class="r-line"></div>
-    ${items.map(x=>`<div class="r-row"><span>${escapeHtml(x.name||"Item")}</span><span>₹ ${formatMoney(x.amount)}</span></div>`).join("")}
-    <div class="r-line"></div>
-    <div class="r-row r-total"><span>TOTAL</span><span>₹ ${formatMoney(total)}</span></div>
-    <div class="r-meta"><span>${escapeHtml(customer)}</span><span>${escapeHtml(date)}</span></div>
-    <div class="r-meta"><span>STATUS: ${escapeHtml(status)}</span><span>THANK YOU</span></div>
-    <div class="qr-wrap">${qrData?`<img src="${qrData}"><div class="scan">SCAN TO PAY</div>`:`<div class="no-qr">PAYMENT QR NOT ADDED</div>`}</div>`;
+  const property = $("businessName").value.trim() || "CARTYWEB RENT RECEIPT";
+  const propertyInfo = $("propertyInfo").value.trim();
+  const owner = $("ownerName").value.trim() || "Property Owner";
+  const contact = $("businessInfo").value.trim();
+  const tenant = $("customerName").value.trim() || "Tenant Name";
+  const status = $("paymentStatus").value;
+  const amount = $("rentAmount").value;
+  const rentMonth = prettyMonth($("rentMonth").value);
+  const paymentDate = prettyDate($("receiptDate").value);
+  const dueDate = prettyDate($("dueDate").value);
+  const method = $("paymentMethod").value;
+  const account = $("paymentAccount").value.trim();
+  const id = $("receiptId").value.trim() || receiptNumber();
+  const message = $("customMessage").value.trim();
+  const statusText = status === "PAID" ? "PAYMENT RECEIVED" : status === "PENDING" ? "PAYMENT PENDING" : "PARTIAL PAYMENT";
+  const statusIcon = status === "PAID" ? "✓" : status === "PENDING" ? "!" : "◐";
+
+  $("receiptPreview").innerHTML = `
+    <div class="receipt-top">
+      <div class="receipt-logo"><span>C</span><div><b>Carty</b><b>Web</b></div></div>
+      <div class="status-box status-${status.toLowerCase()}"><span>${statusIcon}</span><small>${statusText}</small></div>
+    </div>
+    <div class="r-property">${escapeHtml(property)}</div>
+    ${propertyInfo ? `<div class="r-info">${escapeHtml(propertyInfo)}</div>` : ""}
+    <div class="rent-period">Rent for ${escapeHtml(rentMonth)}</div>
+    <div class="r-amount">₹${formatMoney(amount)}</div>
+    <div class="r-dates"><span>${status === "PAID" ? "Paid on" : "Receipt date"}: <b>${escapeHtml(paymentDate)}</b></span>${$("dueDate").value ? `<span>Due: <b>${escapeHtml(dueDate)}</b></span>` : ""}</div>
+
+    <div class="r-dash"></div>
+    <div class="detail-block"><strong>TO: ${escapeHtml(tenant)}</strong><div class="detail-sub">Tenant / Rent payer</div></div>
+    <div class="detail-block"><strong>PROPERTY</strong><div class="detail-sub">${escapeHtml(propertyInfo || property)}</div></div>
+    <div class="r-dash"></div>
+    <div class="detail-block"><strong>FROM: ${escapeHtml(owner)}</strong>${contact ? `<div class="detail-sub">${escapeHtml(contact)}</div>` : ""}</div>
+    <div class="detail-block"><strong>PAYMENT</strong><div class="detail-sub">${escapeHtml(method)}${account ? ` • ${escapeHtml(account)}` : ""}</div></div>
+    <div class="r-dash"></div>
+    <div class="reference-row"><span>Reference ID</span><b>${escapeHtml(id)}</b></div>
+    ${message ? `<div class="message-card"><div class="message-label">MESSAGE</div><div>${escapeHtml(message)}</div></div>` : ""}
+    <div class="receipt-footer">CARTYWEB • RENT PAYMENT RECORD</div>
+  `;
 }
-function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 
-$("receiptForm").addEventListener("input",renderPreview);
-$("receiptDate").value=new Date().toISOString().slice(0,10);
+$("receiptForm").addEventListener("input", renderPreview);
+$("receiptForm").addEventListener("change", renderPreview);
 
-$("qrUpload").onchange=e=>{
- const file=e.target.files[0]; if(!file)return;
- const reader=new FileReader();
- reader.onload=()=>{qrData=reader.result;localStorage.setItem("receiptFlowQR",qrData);$("removeQr").style.display="block";renderPreview();};
- reader.readAsDataURL(file);
-};
-$("removeQr").onclick=()=>{qrData="";localStorage.removeItem("receiptFlowQR");$("qrUpload").value="";$("removeQr").style.display="none";renderPreview();};
+$("clearMessage").onclick = () => { $("customMessage").value = ""; renderPreview(); };
+document.querySelectorAll("[data-preset]").forEach(btn => {
+  btn.onclick = () => { $("customMessage").value = presets[btn.dataset.preset](); renderPreview(); };
+});
 
-$("saveDraft").onclick=()=>{
- const draft={businessType:$("businessType").value,businessName:$("businessName").value,businessInfo:$("businessInfo").value,customerName:$("customerName").value,receiptId:$("receiptId").value,receiptDate:$("receiptDate").value,paymentStatus:$("paymentStatus").value,items};
- localStorage.setItem("receiptFlowDraft",JSON.stringify(draft)); alert("Details saved in this browser.");
+$("saveDraft").onclick = () => {
+  const ids = ["businessName","propertyInfo","ownerName","businessInfo","customerName","rentMonth","rentAmount","paymentStatus","receiptDate","dueDate","paymentMethod","receiptId","paymentAccount","customMessage"];
+  const draft = Object.fromEntries(ids.map(id => [id, $(id).value]));
+  localStorage.setItem("cartyWebRentReceiptDraft", JSON.stringify(draft));
+  alert("Details saved in this browser.");
 };
 function loadDraft(){
- const d=JSON.parse(localStorage.getItem("receiptFlowDraft")||"null"); if(!d)return;
- ["businessType","businessName","businessInfo","customerName","receiptId","receiptDate","paymentStatus"].forEach(k=>{if(d[k]!==undefined)$(k).value=d[k]});
- if(d.items)items=d.items;
+  const d = JSON.parse(localStorage.getItem("cartyWebRentReceiptDraft") || "null");
+  if(!d) return;
+  Object.keys(d).forEach(id => { if($(id)) $(id).value = d[id]; });
 }
-function printReceipt(){
- renderPreview();
- const content=$("receiptPreview").innerHTML;
- const w=window.open("","_blank");
- w.document.write(`<!DOCTYPE html><html><head><title>Receipt</title><style>
- @page{size:80mm auto;margin:0}*{box-sizing:border-box}body{margin:0;background:#fff;font-family:Arial,sans-serif}.receipt{width:80mm;padding:8mm;color:#111}
- .r-title{text-align:center;font-size:18px;letter-spacing:.08em;font-weight:900}.r-info{text-align:center;font-size:9px;margin:5px}.r-id{border:1px solid #111;text-align:center;padding:6px;margin:12px auto;width:90%;font-size:10px}.r-line{border-top:1px solid #111;margin:12px 0}.r-row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;font-size:10px}.r-total{font-size:12px;font-weight:900}.r-meta{display:flex;justify-content:space-between;font-size:8px;margin-top:7px}.qr-wrap{text-align:center;margin-top:15px}.qr-wrap img{width:32mm;height:32mm;object-fit:contain}.scan{font-size:9px;margin-top:4px}.no-qr{font-size:9px;color:#666}
- </style></head><body><div class="receipt">${content}</div><script>window.onload=()=>setTimeout(()=>window.print(),200)<\/script></body></html>`);
- w.document.close();
-}
-$("downloadPdf").onclick=printReceipt;
-$("printPreview").onclick=printReceipt;
 
-loadDraft(); renderItems(); renderPreview();
-if(qrData)$("removeQr").style.display="block";
+function printReceipt(){
+  renderPreview();
+  const content = $("receiptPreview").innerHTML;
+  const w = window.open("", "_blank");
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CartyWeb Rent Receipt</title><style>
+    @page{size:A5;margin:12mm}*{box-sizing:border-box}body{margin:0;background:#fff;font-family:Arial,sans-serif;color:#172033}.receipt{max-width:170mm;margin:auto}.receipt-top{display:flex;justify-content:space-between;align-items:center}.receipt-logo{display:flex;align-items:center;gap:8px;font-size:20px}.receipt-logo>span{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#5146d9;color:#fff;font-weight:900}.receipt-logo div{display:flex;flex-direction:column;line-height:.8}.receipt-logo b:last-child{font-weight:700}.status-box{padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:9px;text-align:center}.status-box span{font-size:18px;display:block}.r-property{font-size:12px;margin-top:20px;font-weight:800;letter-spacing:.08em}.r-info,.rent-period,.detail-sub{font-size:10px;color:#667085;margin-top:4px}.r-amount{font-size:38px;font-weight:900;margin:10px 0}.r-dates{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:#667085}.r-dash{border-top:1px dashed #b8bfcc;margin:16px 0}.detail-block{margin:10px 0;font-size:11px}.reference-row{display:flex;justify-content:space-between;font-size:10px}.message-card{margin-top:18px;padding:12px;background:#f3f4f8;border-radius:8px;font-size:10px;line-height:1.5}.message-label{font-size:8px;font-weight:900;letter-spacing:.12em;color:#5146d9;margin-bottom:5px}.receipt-footer{text-align:center;margin-top:18px;font-size:8px;color:#98a2b3}.status-paid{border-color:#54c878}.status-pending{border-color:#e4a43a}.status-partial{border-color:#756ee6}
+  </style></head><body><div class="receipt">${content}</div><script>window.onload=()=>setTimeout(()=>window.print(),200)<\/script></body></html>`);
+  w.document.close();
+}
+$("downloadPdf").onclick = printReceipt;
+$("printPreview").onclick = printReceipt;
+
+$("receiptDate").value = new Date().toISOString().slice(0,10);
+loadDraft();
+renderPreview();

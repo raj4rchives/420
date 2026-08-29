@@ -3,76 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ReceiptFlow — Receipt Generator</title>
+  <title>CartyWeb — Rent Receipt</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="#"><span class="mark"></span>Receipt<span>Flow</span></a>
-  <nav><a href="#home">Home</a><a href="#generator">Generator</a><a href="#how">How it works</a></nav>
-  <button class="nav-btn" onclick="document.querySelector('#generator').scrollIntoView()">Create receipt →</button>
+  <a class="brand" href="#"><span class="mark">C</span>Carty<span>Web</span></a>
+  <nav><a href="#home">Home</a><a href="#generator">Create receipt</a><a href="#how">How it works</a></nav>
+  <button class="nav-btn" onclick="document.querySelector('#generator').scrollIntoView({behavior:'smooth'})">Create receipt →</button>
 </header>
 
 <main id="home">
   <section class="hero">
     <div class="hero-copy">
-      <p class="eyebrow">RECEIPTS MADE SIMPLE</p>
-      <h1>Create a bill.<br><em>Make it professional.</em><br>Print it.</h1>
-      <p class="lead">Generate clean, professional receipts for gyms, coaching institutes, teachers and small businesses. Add your own payment QR and download a print-ready PDF.</p>
+      <p class="eyebrow">CARTYWEB RENT RECEIPTS</p>
+      <h1>Send rent updates.<br><em>Look professional.</em><br>Stay organized.</h1>
+      <p class="lead">Create a clean rent receipt or payment reminder for any tenant. Add the rent amount, due date and your own message — for example a polite payment reminder or a thank-you after payment.</p>
       <div class="hero-actions">
-        <button class="primary big" onclick="document.querySelector('#generator').scrollIntoView()">Create a receipt →</button>
-        <button class="outline big" onclick="document.querySelector('#how').scrollIntoView()">How it works</button>
+        <button class="primary big" onclick="document.querySelector('#generator').scrollIntoView({behavior:'smooth'})">Create a rent receipt →</button>
+        <button class="outline big" onclick="document.querySelector('#how').scrollIntoView({behavior:'smooth'})">How it works</button>
       </div>
     </div>
     <div class="hero-card">
       <div class="mini-receipt">
-        <div class="mini-title">RECEIPT</div><div class="mini-line"></div>
-        <div class="mini-row"><span>Monthly Membership</span><b>₹ 1,500</b></div>
-        <div class="mini-row"><span>Registration Fee</span><b>₹ 500</b></div>
+        <div class="mini-brand">CARTY<span>WEB</span></div>
+        <div class="mini-status">✓ PAYMENT RECEIVED</div>
+        <div class="mini-amount">₹ 12,000</div>
+        <div class="mini-date">Rent for August 2026</div>
         <div class="mini-line"></div>
-        <div class="mini-total"><span>TOTAL</span><b>₹ 2,000</b></div>
-        <div class="mini-bottom"><div class="fake-qr"></div><span>Professional<br>Printable Receipt</span></div>
+        <div class="mini-row"><span>To</span><b>Tenant Name</b></div>
+        <div class="mini-row"><span>Property</span><b>Room / Flat</b></div>
+        <div class="mini-line"></div>
+        <div class="mini-msg">“Thank you for your payment! Your rent has been received successfully.”</div>
       </div>
     </div>
   </section>
 
-  <section class="stats"><div><b>3</b><span>Business templates</span></div><div><b>PDF</b><span>Print-ready download</span></div><div><b>QR</b><span>Your payment code</span></div><div><b>100%</b><span>Client-side</span></div></section>
+  <section class="stats"><div><b>Rent</b><span>Payment receipts</span></div><div><b>Due</b><span>Payment reminders</span></div><div><b>PDF</b><span>Print-ready receipt</span></div><div><b>100%</b><span>Custom message</span></div></section>
 
   <section id="generator" class="generator">
-    <div class="section-intro"><p class="eyebrow">01 / GENERATOR</p><h2>Create your receipt</h2><p>Fill in the details. Your receipt updates instantly.</p></div>
+    <div class="section-intro"><p class="eyebrow">01 / RENT RECEIPT</p><h2>Create & send a receipt</h2><p>Fill in the details. The receipt updates instantly.</p></div>
 
     <div class="workspace">
       <form class="form-card" id="receiptForm">
         <div class="form-section">
-          <h3>Business details</h3>
-          <div class="field"><label>RECEIPT TYPE</label>
-            <select id="businessType"><option value="GYM">Gym / Fitness</option><option value="COACHING">Coaching / Institute</option><option value="TUITION">Teacher / Tuition</option><option value="BUSINESS">General Business</option></select>
+          <h3>Property & sender</h3>
+          <div class="field"><label>CARTYWEB / PROPERTY NAME</label><input id="businessName" placeholder="e.g. Sharma Residency"></div>
+          <div class="field"><label>PROPERTY / ROOM DETAILS</label><input id="propertyInfo" placeholder="e.g. Flat 204, Green Residency"></div>
+          <div class="two"><div class="field"><label>FROM / OWNER NAME</label><input id="ownerName" placeholder="Your name"></div><div class="field"><label>CONTACT (OPTIONAL)</label><input id="businessInfo" placeholder="Phone or email"></div></div>
+        </div>
+
+        <div class="form-section">
+          <h3>Tenant & rent details</h3>
+          <div class="two"><div class="field"><label>TENANT NAME</label><input id="customerName" placeholder="Tenant full name"></div><div class="field"><label>RENT MONTH</label><input id="rentMonth" type="month"></div></div>
+          <div class="two"><div class="field"><label>RENT AMOUNT</label><input id="rentAmount" type="number" min="0" placeholder="e.g. 12000"></div><div class="field"><label>PAYMENT STATUS</label><select id="paymentStatus"><option value="PAID">PAID</option><option value="PENDING">PENDING</option><option value="PARTIAL">PARTIAL</option></select></div></div>
+          <div class="two"><div class="field"><label>PAYMENT / RECEIPT DATE</label><input id="receiptDate" type="date"></div><div class="field"><label>RENT DUE DATE</label><input id="dueDate" type="date"></div></div>
+        </div>
+
+        <div class="form-section">
+          <h3>Payment information</h3>
+          <div class="two"><div class="field"><label>PAYMENT METHOD</label><select id="paymentMethod"><option>UPI</option><option>Bank Transfer</option><option>Cash</option><option>Other</option></select></div><div class="field"><label>REFERENCE / TRANSACTION ID</label><input id="receiptId" placeholder="Auto generated if empty"></div></div>
+          <div class="field"><label>PAYMENT ACCOUNT / UPI (OPTIONAL)</label><input id="paymentAccount" placeholder="e.g. name@bank or bank name"></div>
+        </div>
+
+        <div class="form-section message-section">
+          <div class="section-title-row"><h3>Message on receipt</h3><button type="button" class="text-btn" id="clearMessage">Clear</button></div>
+          <p class="hint">Write any custom message you want to send with the receipt.</p>
+          <textarea id="customMessage" rows="4" placeholder="Example: Please pay the rent before the due date."></textarea>
+          <div class="message-presets">
+            <button type="button" data-preset="reminder">Payment reminder</button>
+            <button type="button" data-preset="thankyou">Thank you</button>
+            <button type="button" data-preset="received">Payment received</button>
           </div>
-          <div class="field"><label>BUSINESS / INSTITUTE NAME</label><input id="businessName" placeholder="e.g. Peak Fitness Gym"></div>
-          <div class="field"><label>ADDRESS / CONTACT</label><input id="businessInfo" placeholder="Address or phone number"></div>
-        </div>
-
-        <div class="form-section">
-          <h3>Customer & payment</h3>
-          <div class="two"><div class="field"><label>CUSTOMER NAME</label><input id="customerName" placeholder="Full name"></div><div class="field"><label>RECEIPT ID</label><input id="receiptId" placeholder="Auto generated"></div></div>
-          <div class="two"><div class="field"><label>DATE</label><input id="receiptDate" type="date"></div><div class="field"><label>PAYMENT STATUS</label><select id="paymentStatus"><option>PAID</option><option>PENDING</option><option>PARTIAL</option></select></div></div>
-        </div>
-
-        <div class="form-section">
-          <div class="section-title-row"><h3>Bill items</h3><button type="button" class="text-btn" id="addItem">+ Add item</button></div>
-          <div id="items"></div>
-        </div>
-
-        <div class="form-section">
-          <h3>Payment QR</h3>
-          <p class="hint">Upload your own payment QR image. It will appear on the receipt.</p>
-          <label class="upload-box">↑ <span>Upload QR Code</span><input id="qrUpload" type="file" accept="image/*"></label>
-          <button type="button" class="remove-qr" id="removeQr">Remove QR</button>
         </div>
 
         <div class="form-actions">
           <button type="button" class="outline" id="saveDraft">Save details</button>
-          <button type="button" class="primary" id="downloadPdf">Download PDF ↓</button>
+          <button type="button" class="primary" id="downloadPdf">Print / Save PDF ↓</button>
         </div>
       </form>
 
@@ -83,10 +90,10 @@
     </div>
   </section>
 
-  <section id="how" class="how"><p class="eyebrow">02 / SIMPLE PROCESS</p><h2>From details to receipt in minutes.</h2><div class="steps"><div><b>01</b><h3>Fill details</h3><p>Enter business, customer and payment information.</p></div><div><b>02</b><h3>Add your QR</h3><p>Upload your payment QR code if required.</p></div><div><b>03</b><h3>Print or save PDF</h3><p>Use your browser's PDF and print options.</p></div></div></section>
+  <section id="how" class="how"><p class="eyebrow">02 / SIMPLE PROCESS</p><h2>Make a reminder or receipt in minutes.</h2><div class="steps"><div><b>01</b><h3>Add rent details</h3><p>Enter tenant, property, rent amount and dates.</p></div><div><b>02</b><h3>Write your message</h3><p>Use a payment reminder before the due date or a thank-you after payment.</p></div><div><b>03</b><h3>Print or save PDF</h3><p>Send the professional receipt wherever you need.</p></div></div></section>
 </main>
 
-<footer>RECEIPTFLOW <span>•</span> Professional receipt generator</footer>
+<footer>CARTYWEB <span>•</span> Simple rent receipts & payment messages</footer>
 <script src="script.js"></script>
 </body>
 </html>
