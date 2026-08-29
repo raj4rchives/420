@@ -1,136 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JEE Tracker — Study Planner</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JEE Syllabus Tracker</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="page-glow glow-one"></div><div class="page-glow glow-two"></div>
-
-<header class="nav">
-  <div class="nav-inner">
-    <div class="brand">
-      <div class="brand-mark"><span></span><span></span><span></span></div>
-      <div class="brand-name">JEE<span>Tracker</span></div>
-    </div>
-    <div class="nav-actions">
-      <select id="theme" class="theme-select" onchange="applyTheme()" aria-label="Choose theme">
-        <option value="default">Theme · Lavender</option>
-        <option value="midnight">Midnight</option><option value="ocean">Ocean</option>
-        <option value="royal">Royal</option><option value="violet">Violet</option>
-        <option value="plum">Plum</option><option value="rose">Rose</option>
-        <option value="coral">Coral</option><option value="sunset">Sunset</option>
-        <option value="amber">Amber</option><option value="forest">Forest</option>
-        <option value="emerald">Emerald</option><option value="teal">Teal</option>
-        <option value="cyan">Cyan</option><option value="sky">Sky</option>
-        <option value="indigo">Indigo</option><option value="slate">Slate</option>
-        <option value="graphite">Graphite</option><option value="coffee">Coffee</option>
-        <option value="mint">Mint</option><option value="lavender">Lavender</option>
-        <option value="cherry">Cherry</option><option value="neon">Neon</option>
-        <option value="mono">Pure Black</option>
-      </select>
-      <button class="menu-btn" aria-label="Menu">☰</button>
-    </div>
-  </div>
+<header class="topbar">
+  <div class="brand">JEE SYLLABUS TRACKER</div>
+  <nav><a href="#generator">Generator</a><a href="#tracker">Tracker</a><a href="#preview">Preview</a></nav>
+  <button id="themeToggle" class="theme-btn">Theme</button>
 </header>
 
-<main class="container">
-  <section class="hero">
-    <div class="eyebrow"><span class="spark">✦</span> YOUR JEE PREPARATION, ORGANIZED</div>
-    <h1>Plan your syllabus.<br><span>Track your progress.</span><br>Crush your JEE.</h1>
-    <p class="hero-copy">Build a clean, printable syllabus tracker in seconds. Add your subjects, chapters and lectures, then download an A4 tracker you can tick by hand.</p>
-    <div class="hero-buttons">
-      <a href="#builder" class="primary-btn">Create my tracker <b>→</b></a>
-      <a href="#preview" class="ghost-btn">See preview</a>
-    </div>
-    <div class="trust-row">
-      <div class="avatars"><i>PH</i><i>CH</i><i>MA</i><i>JEE</i></div>
-      <div><strong>Made for serious JEE prep</strong><small>Simple • Printable • Offline</small></div>
-      <div class="mini-stat"><strong>24</strong><small>themes</small></div>
-      <div class="mini-stat"><strong>A4</strong><small>print ready</small></div>
-    </div>
+<main>
+  <section class="hero" id="generator">
+    <p class="eyebrow">STUDY MANAGEMENT</p>
+    <h1>JEE SYLLABUS TRACKER</h1>
+    <p>Save your syllabus progress and download a filled printable PDF.</p>
   </section>
 
-  <section class="builder-card" id="builder">
-    <div class="section-head">
-      <div>
-        <div class="tiny-label">01 / BUILD YOUR TRACKER</div>
-        <h2>Add chapters</h2>
-      </div>
-      <span class="pill">Offline Printable</span>
-    </div>
-
-    <div class="form-grid">
-      <div class="field"><label>SUBJECT</label>
-        <select id="subject"><option>PHYSICS</option><option>CHEMISTRY</option><option>MATHEMATICS</option></select>
-      </div>
-      <div class="field field-wide"><label>CHAPTER NAME</label>
-        <input id="chapter" placeholder="e.g. Ray OPTICS">
-      </div>
-      <div class="field"><label>TOTAL LEC</label>
-        <input id="lectures" type="number" min="1" max="100" value="5">
-      </div>
-      <div class="field"><label>MAINS LEVEL</label>
-        <select id="mains"><option>□</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
-      </div>
-      <div class="field"><label>ADV LEVEL</label>
-        <select id="adv"><option>□</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
-      </div>
-    </div>
-
-    <div class="tracking-box">
-      <div class="tiny-label">TRACKING CHECKLIST</div>
-      <div class="options">
-        <label><input type="checkbox" value="SHORT NOTES" checked> SHORT NOTES</label>
-        <label><input type="checkbox" value="DPP" checked> DPP</label>
-        <label><input type="checkbox" value="HW" checked> HW</label>
-        <label><input type="checkbox" value="MODULE" checked> MODULE</label>
-        <label><input type="checkbox" value="PYQ" checked> PYQ</label>
-        <label><input type="checkbox" value="TEST" checked> TEST</label>
-        <label><input type="checkbox" value="R1" checked> R1</label>
-        <label><input type="checkbox" value="R2" checked> R2</label>
-        <label><input type="checkbox" value="R3" checked> R3</label>
-      </div>
-    </div>
-
-    <div class="buttons">
-      <button onclick="addChapter()" class="primary-btn">+ Add chapter</button>
-      <button onclick="generatePreview()" class="ghost-btn">Preview tracker</button>
-      <button onclick="downloadPDF()" class="download-btn">Download PDF <span>↓</span></button>
-      <button onclick="clearAll()" class="clear-btn">Clear all</button>
-    </div>
-
-    <div class="chapter-list" id="chapterList"></div>
+  <section class="panel">
+    <h2>Add Chapter</h2>
+    <form id="chapterForm" class="form-grid">
+      <label>SUBJECT
+        <select id="subject">
+          <option>PHYSICS</option><option>CHEMISTRY</option><option>MATHEMATICS</option>
+        </select>
+      </label>
+      <label>CHAPTER NAME
+        <input id="chapterName" required placeholder="e.g. Ray Optics">
+      </label>
+      <label>TOTAL LECTURES
+        <input id="totalLectures" type="number" min="1" value="5" required>
+      </label>
+      <label>MAINS LEVEL
+        <select id="mainsLevel"><option>□</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+      </label>
+      <label>ADV LEVEL
+        <select id="advLevel"><option>□</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+      </label>
+      <fieldset>
+        <legend>TRACKING ITEMS</legend>
+        <div id="trackingItems" class="checks"></div>
+      </fieldset>
+      <button class="primary" type="submit">+ ADD CHAPTER</button>
+    </form>
   </section>
 
-  <section class="preview-card" id="preview">
-    <div class="section-head">
-      <div><div class="tiny-label">02 / LIVE PREVIEW</div><h2>Your tracker</h2></div>
-      <span class="pill dark-pill">Black print mode</span>
+  <section class="panel" id="tracker">
+    <div class="section-row">
+      <div><h2>Saved Tracker</h2><p>Your progress is automatically saved in this browser.</p></div>
+      <div class="actions">
+        <button id="saveNow">SAVE NOW</button>
+        <button id="previewBtn">PREVIEW</button>
+        <button id="downloadPdf" class="primary">DOWNLOAD FILLED PDF</button>
+        <button id="clearAll" class="danger">CLEAR ALL</button>
+      </div>
     </div>
-    <div id="previewTable"><div class="empty-preview">Add a chapter above to see your tracker here.</div></div>
+    <div id="trackerContent"></div>
   </section>
 
-  <section class="feature-strip">
-    <div><b>01</b><strong>Enter</strong><span>subject, chapter & lectures</span></div>
-    <div><b>02</b><strong>Customize</strong><span>levels & checklist columns</span></div>
-    <div><b>03</b><strong>Print</strong><span>dark A4 PDF, ready to tick</span></div>
+  <section class="panel" id="preview">
+    <h2>PDF Preview</h2>
+    <p class="muted">This is the same information that will be sent to the print/PDF dialog.</p>
+    <div id="previewContent" class="preview-box"></div>
   </section>
-
-  <footer>JEE TRACKER <span>•</span> Offline Printable • Tick everything by hand</footer>
 </main>
-
-<script>
-const oldPreview = document.getElementById('preview');
-const previewTable = document.getElementById('previewTable');
-Object.defineProperty(document.getElementById('preview'), 'innerHTML', {
-  configurable:true,
-  set(v){ previewTable.innerHTML=v; },
-  get(){ return previewTable.innerHTML; }
-});
-</script>
 <script src="script.js"></script>
 </body>
 </html>
