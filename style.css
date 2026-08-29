@@ -74,12 +74,10 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:15px}footer s
 @media(max-width:900px){.form-grid{grid-template-columns:repeat(2,1fr)}.field-wide{grid-column:span 2}}
 @media(max-width:650px){.nav{height:72px}.theme-select{display:none}.container{padding:55px 12px 25px}.hero h1{font-size:45px;letter-spacing:-2.5px}.hero-copy{font-size:14px}.hero-buttons{flex-direction:column}.hero-buttons>*{width:100%}.trust-row{flex-wrap:wrap;margin-bottom:40px}.builder-card,.preview-card{padding:18px;border-radius:18px}.form-grid{grid-template-columns:1fr}.field-wide{grid-column:auto}.section-head{align-items:flex-start}.pill{display:none}.buttons>*{flex:1}.feature-strip{grid-template-columns:1fr}.menu-btn{width:42px;height:42px}}
 
-
-/* Larger lecture blocks in the on-screen preview */
-.preview-title{text-align:center;font-size:21px;font-weight:900;margin:15px 0 2px}
-.preview-subtitle{text-align:center;font-size:12px;margin-bottom:12px}
-.subject-preview{padding:0 0 16px}
-.preview-subject{font-size:15px;margin:12px 8px 6px;font-weight:900}
-.lecture-blocks{min-width:280px;text-align:left!important;padding:6px!important}
-.lecture-block{display:inline-flex;align-items:center;gap:3px;border:1.3px solid #000;padding:4px 6px;margin:2px;font-size:10px;font-weight:800;white-space:nowrap;background:#fff}
-.lecture-box{font-size:14px;font-weight:900}
+/* High-contrast tracker preview */
+#previewTable{border:2px solid #000}
+#previewTable table{font-size:12px}
+#previewTable th,#previewTable td{border:1.7px solid #000;padding:7px 6px}
+#previewTable th{background:#000;color:#fff;font-weight:900}
+#previewTable td.chapter-name{font-weight:900;font-size:12px}
+.lec-preview{display:inline-block;border:1.3px solid #000;padding:4px 6px;margin:2px 3px 2px 0;font-weight:800;white-space:nowrap}

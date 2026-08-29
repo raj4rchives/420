@@ -75,47 +75,22 @@ function renderList(){
     </div>`).join('') : '';
 }
 
-function getAllItems(){
-  return [...new Set(chapters.flatMap(c=>c.items))];
-}
-
-function buildSubjectTable(subject, printable=false){
-  const subjectChapters=chapters.filter(c=>c.subject===subject);
-  if(!subjectChapters.length) return '';
-  const allItems=getAllItems();
-
-  let html=`<h2 class="${printable?'pdf-subject':'preview-subject'}">${subject}</h2>`;
-  html+='<table><thead><tr>';
+function generatePreview(){
+  if(!chapters.length){document.getElementById('preview').innerHTML='';return;}
+  let html='<table><thead><tr>';
   html+='<th>#</th><th>Chapter Name</th><th>Lecture Tracker</th><th>Total Lec</th><th>Lec Comp</th><th>MAINS LEVEL</th><th>ADV LEVEL</th>';
+  const allItems=[...new Set(chapters.flatMap(c=>c.items))];
   allItems.forEach(x=>html+=`<th>${x}</th>`);
   html+='</tr></thead><tbody>';
 
-  subjectChapters.forEach((c,i)=>{
-    html+=`<tr><td>${i+1}</td><td class="chapter-name">${escapeHtml(c.chapter)}</td><td class="lecture-blocks">`;
-    for(let n=1;n<=c.lectures;n++){
-      html+=`<span class="lecture-block"><span class="lecture-box">□</span><span>LEC-${n}</span></span>`;
-    }
-    html+=`</td><td>${c.lectures}</td><td class="check">□</td><td>${c.mains}</td><td>${c.adv}</td>`;
+  chapters.forEach((c,i)=>{
+    html+=`<tr><td>${i+1}</td><td class="chapter-name">${escapeHtml(c.chapter)}</td><td>`;
+    for(let n=1;n<=c.lectures;n++) html+=`<span class="lecture lec-preview">□ LEC-${n}</span>`;
+    html+=`</td><td>${c.lectures}</td><td>□</td><td>${c.mains}</td><td>${c.adv}</td>`;
     allItems.forEach(x=>html+=`<td class="check">${c.items.includes(x)?'□':''}</td>`);
     html+='</tr>';
   });
-
   html+='</tbody></table>';
-  return html;
-}
-
-function generatePreview(){
-  if(!chapters.length){document.getElementById('preview').innerHTML='';return;}
-
-  const subjects=['PHYSICS','CHEMISTRY','MATHEMATICS'];
-  let html='<div class="preview-title">JEE SYLLABUS TRACKER</div>';
-  html+='<div class="preview-subtitle">Offline Printable • Tick everything by hand</div>';
-
-  subjects.forEach(subject=>{
-    const table=buildSubjectTable(subject);
-    if(table) html+=`<section class="subject-preview">${table}</section>`;
-  });
-
   document.getElementById('preview').innerHTML=html;
 }
 
@@ -129,78 +104,43 @@ function escapeHtml(s){
 
 function downloadPDF(){
   if(!chapters.length){alert('Add at least one chapter first.');return;}
-
-  const subjects=['PHYSICS','CHEMISTRY','MATHEMATICS'];
-  const allItems=getAllItems();
-
-  let subjectTables='';
-  subjects.forEach(subject=>{
-    const rows=chapters.filter(c=>c.subject===subject);
-    if(!rows.length) return;
-
-    let table=`<section class="pdf-section"><h2>${subject}</h2><table><thead><tr>
-      <th>#</th><th>Chapter Name</th><th>Lecture Tracker</th><th>Total Lec</th>
-      <th>Lec Comp</th><th>MAINS<br>LEVEL</th><th>ADV<br>LEVEL</th>
-      ${allItems.map(x=>`<th>${x}</th>`).join('')}
-      </tr></thead><tbody>`;
-
-    rows.forEach((c,i)=>{
-      let lectureBlocks='';
-      for(let n=1;n<=c.lectures;n++){
-        lectureBlocks+=`<span class="lec-block"><b>□</b> LEC-${n}</span>`;
-      }
-
-      table+=`<tr>
-        <td>${i+1}</td>
-        <td class="left">${escapeHtml(c.chapter)}</td>
-        <td class="lectures">${lectureBlocks}</td>
-        <td>${c.lectures}</td>
-        <td class="tick">□</td>
-        <td>${c.mains}</td>
-        <td>${c.adv}</td>
-        ${allItems.map(x=>`<td class="tick">${c.items.includes(x)?'□':''}</td>`).join('')}
-      </tr>`;
-    });
-
-    table+='</tbody></table></section>';
-    subjectTables+=table;
+  generatePreview();
+  const allItems=[...new Set(chapters.flatMap(c=>c.items))];
+  let rows='';
+  chapters.forEach((c,i)=>{
+    rows+=`<tr><td>${i+1}</td><td class="left">${escapeHtml(c.chapter)}</td><td class="lectures">`;
+    for(let n=1;n<=c.lectures;n++) rows+=`<span class="lec-block">□ LEC-${n}</span>`;
+    rows+=`</td><td>${c.lectures}</td><td>□</td><td>${c.mains}</td><td>${c.adv}</td>`;
+    allItems.forEach(x=>rows+=`<td>${c.items.includes(x)?'□':''}</td>`);
+    rows+='</tr>';
   });
-
+  const title=chapters[0].subject;
   const win=window.open('','_blank');
-  if(!win){alert('Please allow pop-ups to download the PDF.');return;}
-
-  win.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>JEE Syllabus Tracker</title>
-<style>
-@page{size:A4 landscape;margin:6mm}
-*{box-sizing:border-box}
-body{font-family:Arial,Helvetica,sans-serif;margin:0;color:#000;background:#fff}
-h1{text-align:center;font-size:24px;letter-spacing:.5px;margin:0 0 3px;font-weight:900}
-.subtitle{text-align:center;font-size:12px;font-weight:600;margin-bottom:10px}
-.pdf-section{margin:8px 0 14px;page-break-inside:avoid}
-h2{font-size:17px;margin:8px 0 5px;font-weight:900}
-table{border-collapse:collapse;width:100%;font-size:9.5px;table-layout:auto}
-th,td{border:1.7px solid #000;padding:5px 4px;text-align:center;vertical-align:middle;min-height:28px}
-th{background:#000!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:900;font-size:9px}
-.left{text-align:left;font-weight:800;min-width:120px;font-size:10px}
-.lectures{text-align:left;min-width:270px;padding:5px!important}
-.lec-block{display:inline-block;border:1.2px solid #000;padding:4px 6px;margin:2px 2px;font-size:9px;font-weight:800;white-space:nowrap;min-width:52px}
-.lec-block b{font-size:12px;margin-right:2px}
-.tick{font-size:16px;font-weight:900}
-.foot{font-size:9px;margin-top:7px;text-align:center;font-weight:600}
-@media print{body{width:100%}.pdf-section{break-inside:avoid}}
-</style>
-</head>
-<body>
-<h1>JEE SYLLABUS TRACKER</h1>
-<div class="subtitle">Offline Printable • Tick everything by hand</div>
-${subjectTables}
-<div class="foot">JEE SYLLABUS TRACKER • Offline Printable • Tick everything by hand</div>
-<script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script>
-</body>
-</html>`);
+  win.document.write(`<!DOCTYPE html><html><head><title>JEE Syllabus Tracker</title>
+  <style>
+  @page{size:A4 landscape;margin:5mm}
+  *{box-sizing:border-box}
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;color:#000;background:#fff}
+  h1{text-align:center;font-size:22px;margin:0 0 3px;font-weight:900;letter-spacing:.3px}
+  .subtitle{text-align:center;font-size:11px;margin-bottom:10px;font-weight:700}
+  h2{font-size:16px;margin:8px 0 5px;font-weight:900}
+  table{border-collapse:collapse;width:100%;font-size:9.5px;table-layout:auto}
+  th,td{border:1.7px solid #000!important;padding:5px 4px;text-align:center;vertical-align:middle;height:31px;font-weight:600}
+  th{background:#000!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:900;font-size:9px}
+  .left{text-align:left!important;font-weight:900!important;min-width:115px;font-size:10px}
+  .lectures{text-align:left!important;font-size:8.5px!important;line-height:18px;min-width:260px;padding:4px!important}
+  .lec-block{display:inline-block;border:1.4px solid #000;padding:3px 5px;margin:2px 3px 2px 0;font-weight:800;white-space:nowrap}
+  .foot{font-size:8px;margin-top:6px;font-weight:700}
+  </style>  </style></head><body>
+  <h1>JEE SYLLABUS TRACKER</h1>
+  <div class="subtitle">Offline Printable • Tick everything by hand</div>
+  <h2>${title}</h2>
+  <table><thead><tr>
+  <th>#</th><th>Chapter Name</th><th>Lecture Tracker</th><th>Total Lec</th><th>Lec Comp</th><th>MAINS<br>LEVEL</th><th>ADV<br>LEVEL</th>
+  ${allItems.map(x=>`<th>${x}</th>`).join('')}
+  </tr></thead><tbody>${rows}</tbody></table>
+  <div class="foot">JEE SYLLABUS TRACKER • Offline Printable • Tick everything by hand</div>
+  <script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script>
+  </body></html>`);
   win.document.close();
 }
