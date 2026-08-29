@@ -67,6 +67,7 @@
           <h3>Tenant & rent details</h3>
           <div class="two"><div class="field"><label>TENANT NAME</label><input id="customerName" placeholder="Tenant full name"></div><div class="field"><label>RENT MONTH</label><input id="rentMonth" type="month"></div></div>
           <div class="two"><div class="field"><label>RENT AMOUNT</label><input id="rentAmount" type="number" min="0" placeholder="e.g. 12000"></div><div class="field"><label>PAYMENT STATUS</label><select id="paymentStatus"><option value="PAID">PAID</option><option value="PENDING">PENDING</option><option value="PARTIAL">PARTIAL</option></select></div></div>
+          <div class="field"><label>STATUS ICON</label><div class="status-icon-picker" id="statusIconPicker"><button type="button" data-status-icon="✓" title="Paid">✓</button><button type="button" data-status-icon="!" title="Pending">!</button><button type="button" data-status-icon="⌛" title="Waiting">⌛</button><button type="button" data-status-icon="₹" title="Payment">₹</button><button type="button" data-status-icon="◐" title="Partial">◐</button></div><p class="hint">Choose the icon shown in the payment status box.</p></div>
           <div class="two"><div class="field"><label>PAYMENT / RECEIPT DATE</label><input id="receiptDate" type="date"></div><div class="field"><label>RENT DUE DATE</label><input id="dueDate" type="date"></div></div>
         </div>
 
@@ -74,6 +75,7 @@
           <h3>Payment information</h3>
           <div class="two"><div class="field"><label>PAYMENT METHOD</label><select id="paymentMethod"><option>UPI</option><option>Bank Transfer</option><option>Cash</option><option>Other</option></select></div><div class="field"><label>REFERENCE / TRANSACTION ID</label><input id="receiptId" placeholder="Auto generated if empty"></div></div>
           <div class="field"><label>PAYMENT ACCOUNT / UPI (OPTIONAL)</label><input id="paymentAccount" placeholder="e.g. name@bank or bank name"></div>
+          <div class="field qr-upload-field"><label>PAYMENT QR CODE (OPTIONAL)</label><div class="qr-upload-row"><label class="qr-upload-btn" for="qrInput">+ Upload payment QR</label><input id="qrInput" type="file" accept="image/png,image/jpeg,image/webp"><span id="qrFileName">No QR selected</span><button type="button" class="remove-qr" id="removeQr">Remove</button></div><p class="hint">Upload your UPI/payment QR. It can be shown on pending payment receipts so the tenant can scan and pay.</p></div>
         </div>
 
         <div class="form-section message-section">

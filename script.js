@@ -1,5 +1,7 @@
 const $ = id => document.getElementById(id);
 let receiptLogoData = localStorage.getItem("cartyWebReceiptLogo") || "";
+let paymentQrData = localStorage.getItem("cartyWebPaymentQr") || "";
+let selectedStatusIcon = localStorage.getItem("cartyWebStatusIcon") || "";
 
 function formatMoney(v){
   const n = Number(v || 0);
@@ -38,7 +40,10 @@ function renderPreview(){
   const id = $("receiptId").value.trim() || receiptNumber();
   const message = $("customMessage").value.trim();
   const statusText = status === "PAID" ? "PAYMENT RECEIVED" : status === "PENDING" ? "PAYMENT PENDING" : "PARTIAL PAYMENT";
-  const statusIcon = status === "PAID" ? "✓" : status === "PENDING" ? "!" : "◐";
+  const defaultStatusIcon = status === "PAID" ? "✓" : status === "PENDING" ? "!" : "◐";
+  const statusIcon = selectedStatusIcon || defaultStatusIcon;
+  const showQr = paymentQrData && status === "PENDING";
+  document.querySelectorAll("[data-status-icon]").forEach(b => b.classList.toggle("active", b.dataset.statusIcon === statusIcon));
 
   const logoMarkup = receiptLogoData ? `<img class="receipt-logo-image" src="${receiptLogoData}" alt="Receipt logo">` : `<img class="receipt-logo-brand" src="cartyweb-logo.png" alt="CartyWeb">`;
   $("receiptPreview").innerHTML = `
@@ -60,6 +65,7 @@ function renderPreview(){
     <div class="detail-block"><strong>PAYMENT</strong><div class="detail-sub">${escapeHtml(method)}${account ? ` • ${escapeHtml(account)}` : ""}</div></div>
     <div class="r-dash"></div>
     <div class="reference-row"><span>Reference ID</span><b>${escapeHtml(id)}</b></div>
+    ${showQr ? `<div class="payment-qr-card"><div class="payment-qr-label">SCAN TO PAY RENT</div><img src="${paymentQrData}" alt="Payment QR code"><div class="payment-qr-note">Scan this QR code to make the rent payment.</div></div>` : ""}
     ${message ? `<div class="message-card"><div class="message-label">MESSAGE</div><div>${escapeHtml(message)}</div></div>` : ""}
     <div class="receipt-footer">CARTYWEB • RENT PAYMENT RECORD</div>
   `;
@@ -78,6 +84,8 @@ $("saveDraft").onclick = () => {
   const draft = Object.fromEntries(ids.map(id => [id, $(id).value]));
   localStorage.setItem("cartyWebRentReceiptDraft", JSON.stringify(draft));
   localStorage.setItem("cartyWebReceiptLogo", receiptLogoData);
+  localStorage.setItem("cartyWebPaymentQr", paymentQrData);
+  localStorage.setItem("cartyWebStatusIcon", selectedStatusIcon);
   alert("Details saved in this browser.");
 };
 function loadDraft(){
@@ -91,7 +99,7 @@ function printReceipt(){
   const content = $("receiptPreview").innerHTML;
   const w = window.open("", "_blank");
   w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CartyWeb Rent Receipt</title><link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
-    @page{size:A5;margin:12mm}*{box-sizing:border-box}body{margin:0;background:#fff;font-family:"Teko",Arial,sans-serif;color:#172033}.receipt{max-width:170mm;margin:auto}.receipt-top{display:flex;justify-content:space-between;align-items:center}.receipt-logo{display:flex;align-items:center;gap:8px;font-size:20px}.receipt-logo-brand{width:132px;height:44px;object-fit:contain;object-position:left center;display:block}.receipt-logo-image{width:44px;height:44px;object-fit:contain;border-radius:9px;border:1px solid #e1e3ea;padding:3px}.receipt-logo>span{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#5146d9;color:#fff;font-weight:900}.receipt-logo div{display:flex;flex-direction:column;line-height:.8}.receipt-logo b:last-child{font-weight:700}.status-box{padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:9px;text-align:center}.status-box span{font-size:18px;display:block}.r-property{font-size:12px;margin-top:20px;font-weight:800;letter-spacing:.08em}.r-info,.rent-period,.detail-sub{font-size:10px;color:#667085;margin-top:4px}.r-amount{font-size:38px;font-weight:900;margin:10px 0}.r-dates{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:#667085}.r-dash{border-top:1px dashed #b8bfcc;margin:16px 0}.detail-block{margin:10px 0;font-size:11px}.reference-row{display:flex;justify-content:space-between;font-size:10px}.message-card{margin-top:18px;padding:12px;background:#f3f4f8;border-radius:8px;font-size:10px;line-height:1.5}.message-label{font-size:8px;font-weight:900;letter-spacing:.12em;color:#5146d9;margin-bottom:5px}.receipt-footer{text-align:center;margin-top:18px;font-size:8px;color:#98a2b3}.status-paid{border-color:#54c878}.status-pending{border-color:#e4a43a}.status-partial{border-color:#756ee6}
+    @page{size:A5;margin:12mm}*{box-sizing:border-box}body{margin:0;background:#fff;font-family:"Teko",Arial,sans-serif;color:#172033}.receipt{max-width:170mm;margin:auto}.receipt-top{display:flex;justify-content:space-between;align-items:center}.receipt-logo{display:flex;align-items:center;gap:8px;font-size:20px}.receipt-logo-brand{width:132px;height:44px;object-fit:contain;object-position:left center;display:block}.receipt-logo-image{width:44px;height:44px;object-fit:contain;border-radius:9px;border:1px solid #e1e3ea;padding:3px}.receipt-logo>span{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#5146d9;color:#fff;font-weight:900}.receipt-logo div{display:flex;flex-direction:column;line-height:.8}.receipt-logo b:last-child{font-weight:700}.status-box{padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:9px;text-align:center}.status-box span{font-size:18px;display:block}.r-property{font-size:12px;margin-top:20px;font-weight:800;letter-spacing:.08em}.r-info,.rent-period,.detail-sub{font-size:10px;color:#667085;margin-top:4px}.r-amount{font-size:38px;font-weight:900;margin:10px 0}.r-dates{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:#667085}.r-dash{border-top:1px dashed #b8bfcc;margin:16px 0}.detail-block{margin:10px 0;font-size:11px}.reference-row{display:flex;justify-content:space-between;font-size:10px}.message-card{margin-top:18px;padding:12px;background:#f3f4f8;border-radius:8px;font-size:10px;line-height:1.5}.message-label{font-size:8px;font-weight:900;letter-spacing:.12em;color:#5146d9;margin-bottom:5px}.receipt-footer{text-align:center;margin-top:18px;font-size:8px;color:#98a2b3}.status-paid{border-color:#54c878}.status-pending{border-color:#e4a43a}.status-partial{border-color:#756ee6}.payment-qr-card{margin-top:18px;padding:10px;border:1px dashed #c9c4f6;border-radius:8px;text-align:center}.payment-qr-label{font-size:8px;font-weight:900;letter-spacing:.12em;color:#5146d9;margin-bottom:7px}.payment-qr-card img{width:95px;height:95px;object-fit:contain;border:1px solid #e2e2ef;padding:3px}.payment-qr-note{font-size:8px;color:#667085;margin-top:5px}
   </style></head><body><div class="receipt">${content}</div><script>window.onload=()=>setTimeout(()=>window.print(),200)<\/script></body></html>`);
   w.document.close();
 }
@@ -118,10 +126,50 @@ $("removeLogo").onclick = () => {
   renderPreview();
 };
 
+
+// Status icon picker
+const defaultIconForStatus = status => status === "PAID" ? "✓" : status === "PENDING" ? "!" : "◐";
+document.querySelectorAll("[data-status-icon]").forEach(btn => {
+  btn.onclick = () => {
+    selectedStatusIcon = btn.dataset.statusIcon;
+    localStorage.setItem("cartyWebStatusIcon", selectedStatusIcon);
+    renderPreview();
+  };
+});
+$("paymentStatus").addEventListener("change", () => {
+  selectedStatusIcon = defaultIconForStatus($("paymentStatus").value);
+  localStorage.setItem("cartyWebStatusIcon", selectedStatusIcon);
+  renderPreview();
+});
+
+// Payment QR upload
+$("qrInput").addEventListener("change", e => {
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  if(!["image/png","image/jpeg","image/webp"].includes(file.type)) { alert("Please upload a PNG, JPG or WEBP QR image."); e.target.value = ""; return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    paymentQrData = reader.result;
+    localStorage.setItem("cartyWebPaymentQr", paymentQrData);
+    $("qrFileName").textContent = file.name;
+    renderPreview();
+  };
+  reader.readAsDataURL(file);
+});
+$("removeQr").onclick = () => {
+  paymentQrData = "";
+  $("qrInput").value = "";
+  $("qrFileName").textContent = "No QR selected";
+  localStorage.removeItem("cartyWebPaymentQr");
+  renderPreview();
+};
+
 $("downloadPdf").onclick = printReceipt;
 $("printPreview").onclick = printReceipt;
 
 $("receiptDate").value = new Date().toISOString().slice(0,10);
 loadDraft();
 if(receiptLogoData) $("logoFileName").textContent = "Saved logo ready";
+if(paymentQrData) $("qrFileName").textContent = "Saved payment QR ready";
+if(!selectedStatusIcon) selectedStatusIcon = defaultIconForStatus($("paymentStatus").value);
 renderPreview();
